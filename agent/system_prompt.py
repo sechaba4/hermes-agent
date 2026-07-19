@@ -477,6 +477,19 @@ def build_system_prompt_parts(agent: Any, system_message: Optional[str] = None) 
         if context_files_prompt:
             context_parts.append(context_files_prompt)
 
+        # Fixed, user-configured vault files (config.yaml `vault_context`) —
+        # unlike the AGENTS.md/.cursorrules block above this is NOT
+        # cwd-discovered; it's an explicit file list loaded unconditionally
+        # every session when enabled. See agent/vault_context.py. Disabled
+        # by default; failure here must never block prompt assembly.
+        try:
+            from agent.vault_context import build_vault_context_prompt
+            vault_context_prompt = build_vault_context_prompt(context_length=_ctx_len)
+            if vault_context_prompt:
+                context_parts.append(vault_context_prompt)
+        except Exception:
+            pass
+
     # ── Volatile tier (changes per session/turn — never cached) ───
     volatile_parts: List[str] = []
 
