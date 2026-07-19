@@ -2275,6 +2275,17 @@ DEFAULT_CONFIG = {
         "engine": "compressor",
     },
 
+    # Vault context -- a fixed, user-configured list of files auto-loaded into
+    # every session's system prompt (agent/vault_context.py). Unlike memory,
+    # there is no consolidation/budget here, only per-file truncation, so this
+    # is a standing per-turn token cost. Disabled by default -- opt-in, since
+    # not every install has a shared vault.
+    "vault_context": {
+        "enabled": False,
+        "vault_path": "",
+        "files": [],
+    },
+
     # Persistent memory -- bounded curated memory injected into system prompt
     "memory": {
         "memory_enabled": True,
