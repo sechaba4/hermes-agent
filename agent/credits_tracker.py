@@ -90,7 +90,7 @@ def _validate_usd(value: Optional[str]) -> bool:
 # ── CreditsState dataclass ───────────────────────────────────────────────────
 
 
-@dataclass
+@dataclass(slots=True)
 class CreditsState:
     """Full credits state parsed from x-nous-credits-* response headers."""
 
@@ -174,7 +174,7 @@ CREDITS_USAGE_KEY = "credits.usage"  # single key for the escalating usage notic
 # ── AgentNotice (out-of-band notice payload; driver-agnostic) ────────────────
 
 
-@dataclass
+@dataclass(slots=True)
 class AgentNotice:
     """A structured, driver-agnostic out-of-band notice.
 

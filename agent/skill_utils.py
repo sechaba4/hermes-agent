@@ -699,32 +699,45 @@ def discover_all_skill_config_vars() -> List[Dict[str, Any]]:
 
     Disabled and platform-incompatible skills are excluded.
     """
+    import concurrent.futures
     all_vars: List[Dict[str, Any]] = []
     seen_keys: set = set()
 
     disabled = get_disabled_skill_names()
+    
+    # Collect all skill files first
+    skill_files = []
     for skills_dir in get_all_skills_dirs():
         if not skills_dir.is_dir():
             continue
         for skill_file in iter_skill_index_files(skills_dir, "SKILL.md"):
-            try:
-                raw = skill_file.read_text(encoding="utf-8")
-                frontmatter, _ = parse_frontmatter(raw)
-            except Exception:
-                continue
+            skill_files.append(skill_file)
+            
+    def _parse_skill(skill_file: Path) -> List[Dict[str, Any]]:
+        try:
+            raw = skill_file.read_text(encoding="utf-8")
+            frontmatter, _ = parse_frontmatter(raw)
+        except Exception:
+            return []
 
-            skill_name = frontmatter.get("name") or skill_file.parent.name
-            if str(skill_name) in disabled:
-                continue
-            if not skill_matches_platform(frontmatter):
-                continue
+        skill_name = frontmatter.get("name") or skill_file.parent.name
+        if str(skill_name) in disabled:
+            return []
+        if not skill_matches_platform(frontmatter):
+            return []
 
-            config_vars = extract_skill_config_vars(frontmatter)
-            for var in config_vars:
-                if var["key"] not in seen_keys:
-                    var["skill"] = str(skill_name)
-                    all_vars.append(var)
-                    seen_keys.add(var["key"])
+        config_vars = extract_skill_config_vars(frontmatter)
+        for var in config_vars:
+            var["skill"] = str(skill_name)
+        return config_vars
+
+    if skill_files:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(20, len(skill_files))) as executor:
+            for result_vars in executor.map(_parse_skill, skill_files):
+                for var in result_vars:
+                    if var["key"] not in seen_keys:
+                        all_vars.append(var)
+                        seen_keys.add(var["key"])
 
     return all_vars
 

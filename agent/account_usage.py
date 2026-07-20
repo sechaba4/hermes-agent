@@ -22,7 +22,7 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AccountUsageWindow:
     label: str
     used_percent: Optional[float] = None
@@ -30,7 +30,7 @@ class AccountUsageWindow:
     detail: Optional[str] = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AccountUsageSnapshot:
     provider: str
     source: str
@@ -338,7 +338,7 @@ def _snapshot_from_credits_state(state) -> Optional[AccountUsageSnapshot]:
         return None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CreditsView:
     """Surface-agnostic data for the ``/topup`` balance view.
 
@@ -563,7 +563,7 @@ def _fetch_codex_account_usage(
     )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CodexResetRedeemResult:
     """Outcome of a `/usage reset` attempt against the Codex backend."""
 

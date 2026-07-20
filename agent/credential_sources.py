@@ -50,7 +50,7 @@ from dataclasses import dataclass, field
 from typing import Callable, List, Optional
 
 
-@dataclass
+@dataclass(slots=True)
 class RemovalResult:
     """Outcome of removing a credential source.
 
@@ -75,7 +75,7 @@ class RemovalResult:
     suppress: bool = True
 
 
-@dataclass
+@dataclass(slots=True)
 class RemovalStep:
     """How to remove one specific credential source cleanly.
 

@@ -29,7 +29,7 @@ from __future__ import annotations
 from dataclasses import dataclass, fields
 
 
-@dataclass
+@dataclass(slots=True)
 class TurnRetryState:
     """One-shot recovery guards + restart signals for a single API-call attempt.
 

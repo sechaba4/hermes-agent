@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CurrentSubscription:
     """The user's active subscription. ``None`` (not this object) = no plan.
 
@@ -55,7 +55,7 @@ class CurrentSubscription:
     cancellation_effective_at: Optional[str] = None  # ISO
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SubscriptionTier:
     """A selectable plan in the catalog — one row of the in-terminal tier picker.
 
@@ -74,7 +74,7 @@ class SubscriptionTier:
     is_enabled: bool = True
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SubscriptionChangePreview:
     """Parsed ``POST /api/billing/subscription/preview`` — what a change would do.
 
@@ -96,7 +96,7 @@ class SubscriptionChangePreview:
     effective_at: Optional[str] = None  # ISO
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SubscriptionState:
     """Parsed ``GET /api/billing/subscription`` — the overview screen's data.
 

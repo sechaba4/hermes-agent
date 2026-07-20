@@ -99,7 +99,7 @@ _MAX_INLINE_DIFF_FILES = 6
 _MAX_INLINE_DIFF_LINES = 80
 
 
-@dataclass
+@dataclass(slots=True)
 class LocalEditSnapshot:
     """Pre-tool filesystem snapshot used to render diffs locally after writes."""
     paths: list[Path] = field(default_factory=list)

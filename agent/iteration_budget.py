@@ -28,6 +28,7 @@ class IterationBudget:
     ``execute_code`` (programmatic tool calling) iterations are refunded via
     :meth:`refund` so they don't eat into the budget.
     """
+    __slots__ = ("max_total", "_used", "_lock")
 
     def __init__(self, max_total: int):
         self.max_total = max_total

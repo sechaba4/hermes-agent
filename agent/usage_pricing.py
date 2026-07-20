@@ -27,7 +27,7 @@ CostSource = Literal[
 ]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CanonicalUsage:
     input_tokens: int = 0
     output_tokens: int = 0
@@ -65,7 +65,7 @@ class CanonicalUsage:
         )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class BillingRoute:
     provider: str
     model: str
@@ -73,7 +73,7 @@ class BillingRoute:
     billing_mode: str = "unknown"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class PricingEntry:
     input_cost_per_million: Optional[Decimal] = None
     output_cost_per_million: Optional[Decimal] = None
@@ -86,7 +86,7 @@ class PricingEntry:
     fetched_at: Optional[datetime] = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CostResult:
     amount_usd: Optional[Decimal]
     status: CostStatus

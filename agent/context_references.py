@@ -38,7 +38,7 @@ _SENSITIVE_HOME_FILES = (
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ContextReference:
     raw: str
     kind: str
@@ -49,7 +49,7 @@ class ContextReference:
     line_end: int | None = None
 
 
-@dataclass
+@dataclass(slots=True)
 class ContextReferenceResult:
     message: str
     original_message: str

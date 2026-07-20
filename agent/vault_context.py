@@ -29,15 +29,17 @@ standing per-turn token cost regardless of relevance.
 
 from __future__ import annotations
 
+import functools
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
 from agent.prompt_builder import _scan_context_content, _truncate_content
 
 logger = logging.getLogger(__name__)
 
 
+@functools.lru_cache(maxsize=1)
 def build_vault_context_prompt(context_length: Optional[int] = None) -> str:
     """Read the configured vault files and return a system-prompt block.
 
@@ -66,21 +68,22 @@ def build_vault_context_prompt(context_length: Optional[int] = None) -> str:
         logger.warning("vault_context.vault_path does not exist: %s", vault_path)
         return ""
 
-    blocks = []
-    for rel in files:
+    import concurrent.futures
+
+    def _load_file(rel: Any) -> Optional[str]:
         if not isinstance(rel, str) or not rel.strip():
-            continue
+            return None
         candidate = vault_path / rel
         if not candidate.exists():
             logger.debug("vault_context file missing, skipping: %s", candidate)
-            continue
+            return None
         try:
             content = candidate.read_text(encoding="utf-8").strip()
         except Exception as e:
             logger.debug("Could not read vault_context file %s: %s", candidate, e)
-            continue
+            return None
         if not content:
-            continue
+            return None
         # Same injection-pattern scan applied to AGENTS.md/.cursorrules — this
         # content enters the system prompt verbatim, so a poisoned vault file
         # (shared/synced from elsewhere) can't reach the model unfiltered.
@@ -89,7 +92,13 @@ def build_vault_context_prompt(context_length: Optional[int] = None) -> str:
             content, f"vault:{rel}", context_length=context_length,
             read_path=str(candidate),
         )
-        blocks.append(f"## {rel}\n\n{content}")
+        return f"## {rel}\n\n{content}"
+
+    blocks = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(files))) as executor:
+        for block in executor.map(_load_file, files):
+            if block:
+                blocks.append(block)
 
     if not blocks:
         return ""

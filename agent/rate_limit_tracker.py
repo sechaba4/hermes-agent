@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional
 
 
-@dataclass
+@dataclass(slots=True)
 class RateLimitBucket:
     """One rate-limit window (e.g. requests per minute)."""
 
@@ -53,7 +53,7 @@ class RateLimitBucket:
         return max(0.0, self.reset_seconds - elapsed)
 
 
-@dataclass
+@dataclass(slots=True)
 class RateLimitState:
     """Full rate-limit state parsed from response headers."""
 

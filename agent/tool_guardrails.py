@@ -60,7 +60,7 @@ MUTATING_TOOL_NAMES = frozenset(
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ToolCallGuardrailConfig:
     """Thresholds for per-turn tool-call loop detection.
 
@@ -124,7 +124,7 @@ class ToolCallGuardrailConfig:
         )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ToolCallSignature:
     """Stable, non-reversible identity for a tool name plus canonical args."""
 
@@ -141,7 +141,7 @@ class ToolCallSignature:
         return {"tool_name": self.tool_name, "args_hash": self.args_hash}
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ToolGuardrailDecision:
     """Decision returned by the tool-call guardrail controller."""
 

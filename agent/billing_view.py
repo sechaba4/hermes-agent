@@ -75,7 +75,7 @@ _CARD_PROVENANCE_LABELS = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CardInfo:
     brand: str
     last4: str
@@ -107,14 +107,14 @@ class CardInfo:
         return f"{self.masked} — {label}" if label else self.masked
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class MonthlyCap:
     limit_usd: Optional[Decimal] = None
     spent_this_month_usd: Optional[Decimal] = None
     is_default_ceiling: bool = False
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AutoReloadCard:
     kind: str  # "canonical" | "distinct" | "none"
     payment_method_id: Optional[str] = None
@@ -122,7 +122,7 @@ class AutoReloadCard:
     last4: Optional[str] = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AutoReload:
     enabled: bool = False
     threshold_usd: Optional[Decimal] = None
@@ -130,7 +130,7 @@ class AutoReload:
     card: Optional[AutoReloadCard] = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class BillingState:
     """Parsed ``GET /api/billing/state`` — the overview screen's data.
 
@@ -427,7 +427,7 @@ def new_idempotency_key() -> str:
 # =============================================================================
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class AmountValidation:
     ok: bool
     amount: Optional[Decimal] = None

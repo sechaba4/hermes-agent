@@ -1971,15 +1971,25 @@ def _load_cursorrules(cwd_path: Path, context_length: Optional[int] = None) -> s
 
     cursor_rules_dir = cwd_path / ".cursor" / "rules"
     if cursor_rules_dir.exists() and cursor_rules_dir.is_dir():
-        mdc_files = sorted(cursor_rules_dir.glob("*.mdc"))
-        for mdc_file in mdc_files:
+        import concurrent.futures
+
+        def _load_mdc(mdc_file: Path) -> Optional[str]:
             try:
                 content = mdc_file.read_text(encoding="utf-8").strip()
                 if content:
                     content = _scan_context_content(content, f".cursor/rules/{mdc_file.name}")
-                    cursorrules_content += f"## .cursor/rules/{mdc_file.name}\n\n{content}\n\n"
+                    return f"## .cursor/rules/{mdc_file.name}\n\n{content}\n\n"
             except Exception as e:
                 logger.debug("Could not read %s: %s", mdc_file, e)
+            return None
+
+        mdc_files = sorted(cursor_rules_dir.glob("*.mdc"))
+        if mdc_files:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(mdc_files))) as executor:
+                # Need to preserve deterministic order for prompt cache consistency
+                for result in executor.map(_load_mdc, mdc_files):
+                    if result:
+                        cursorrules_content += result
 
     if not cursorrules_content:
         return ""

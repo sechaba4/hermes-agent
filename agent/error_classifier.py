@@ -74,7 +74,7 @@ class FailoverReason(enum.Enum):
 
 # ── Classification result ───────────────────────────────────────────────
 
-@dataclass
+@dataclass(slots=True)
 class ClassifiedError:
     """Structured classification of an API error with recovery hints."""
 

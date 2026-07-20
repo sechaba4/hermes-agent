@@ -8879,9 +8879,9 @@ def _inject_profile_env_vars() -> None:
         pass
 
 
-# Eagerly inject so that OPTIONAL_ENV_VARS is fully populated at import time.
-_inject_profile_env_vars()
-
+# We no longer eagerly inject here. Callers that need the fully populated
+# OPTIONAL_ENV_VARS (like the setup wizard or web server) must call
+# _inject_profile_env_vars() explicitly.
 
 # ── Platform-plugin env var injection ────────────────────────────────────────
 # Bundled platform plugins under ``plugins/platforms/*/plugin.yaml`` declare
@@ -8976,5 +8976,5 @@ def _inject_platform_plugin_env_vars() -> None:
         pass
 
 
-# Eagerly inject so that platform plugin env vars show up in the setup wizard.
-_inject_platform_plugin_env_vars()
+# We no longer eagerly inject here. Callers that need the fully populated
+# OPTIONAL_ENV_VARS must call _inject_platform_plugin_env_vars() explicitly.

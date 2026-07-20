@@ -31,7 +31,7 @@ _VERIFY_SCHEMA_VERSION = 1
 _SHELL_SPLIT_RE = re.compile(r"\s*(?:&&|\|\||;)\s*")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class VerificationEvidence:
     """A classified command result worth recording."""
 

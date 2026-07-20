@@ -85,7 +85,7 @@ def format_renews(value: Optional[str]) -> Optional[str]:
     return f"{dt.strftime('%b')} {dt.day}, {dt.year}"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class UsageBar:
     """One full-resolution bar: ``spent`` of ``total``, plus a remaining figure.
 
@@ -113,7 +113,7 @@ class UsageBar:
         return max(0.0, min(1.0, self.remaining_usd / self.total_usd))
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class UsageModel:
     """Surface-agnostic dollar usage model shared by /usage and /subscription.
 

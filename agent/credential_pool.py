@@ -161,7 +161,7 @@ def _normalize_pool_auth_type(provider: str, token: Any, auth_type: Any) -> str:
     return str(auth_type or AUTH_TYPE_API_KEY)
 
 
-@dataclass
+@dataclass(slots=True)
 class PooledCredential:
     provider: str
     id: str

@@ -238,7 +238,7 @@ def _should_run_preflight_estimate(
     return estimate_messages_tokens_rough(messages) >= threshold_tokens
 
 
-@dataclass
+@dataclass(slots=True)
 class TurnContext:
     """Values produced by the turn prologue and consumed by the turn loop."""
 
