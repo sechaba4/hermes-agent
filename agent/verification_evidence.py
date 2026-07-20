@@ -13,7 +13,7 @@ import shlex
 import sqlite3
 import tempfile
 import threading
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -489,7 +489,7 @@ def record_terminal_result(
             _prune_old_events(conn, session_id=evidence.session_id, root=evidence.root)
             conn.commit()
 
-    return {"id": event_id, **evidence.__dict__, "created_at": created_at}
+    return {"id": event_id, **asdict(evidence), "created_at": created_at}
 
 
 def mark_workspace_edited(

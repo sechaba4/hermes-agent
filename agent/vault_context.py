@@ -29,7 +29,6 @@ standing per-turn token cost regardless of relevance.
 
 from __future__ import annotations
 
-import functools
 import logging
 from pathlib import Path
 from typing import Optional, Any
@@ -39,9 +38,17 @@ from agent.prompt_builder import _scan_context_content, _truncate_content
 logger = logging.getLogger(__name__)
 
 
-@functools.lru_cache(maxsize=1)
 def build_vault_context_prompt(context_length: Optional[int] = None) -> str:
     """Read the configured vault files and return a system-prompt block.
+
+    Deliberately NOT memoized: the caller (system_prompt.py) already caches
+    the whole system prompt once per session/agent-instance, which is the
+    documented "frozen snapshot per session" contract. A process-wide cache
+    on top of that would serve the FIRST session's vault content to every
+    later session for the life of a long-running gateway process (same
+    context_length -> cache hit), silently going stale after any edit to
+    the vault files. The concurrent file loading below is what actually
+    makes repeat calls cheap.
 
     Returns "" when vault_context is disabled/unconfigured, the vault path
     doesn't exist, or none of the configured files could be read. Never
